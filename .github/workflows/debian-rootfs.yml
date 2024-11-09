@@ -16,16 +16,32 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y debootstrap
 
-      - name: Create Debian Rootfs Tarball
+      - name: Create Debian Rootfs
         run: |
-          # Define the output tarball path
-          OUTPUT_TARBALL="${{ github.workspace }}/debian-rootfs.tar.gz"
+          # Define the rootfs output directory with full path
+          export ROOTFS_DIR="${{ github.workspace }}/debian-rootfs"
           
-          # Use debootstrap to create a minbase Debian rootfs tarball directly
-          sudo debootstrap --variant=minbase --arch=amd64 --make-tarball="$OUTPUT_TARBALL" stable "" http://deb.debian.org/debian 
+          # Make sure the directory is created and empty
+          sudo rm -rf "$ROOTFS_DIR"
+          sudo mkdir -p "$ROOTFS_DIR"
           
-          # Adjust ownership to ensure the GitHub Actions runner user owns the tarball
-          sudo chown $USER:$USER "$OUTPUT_TARBALL"
+          # Run debootstrap with minbase variant
+          sudo debootstrap --variant=minbase --arch=amd64 stable "$ROOTFS_DIR" http://deb.debian.org/debian
+
+      - name: Verify Rootfs Directory
+        run: |
+          # Check if the rootfs directory exists and is populated
+          if [ -d "${{ github.workspace }}/debian-rootfs" ] && [ "$(ls -A "${{ github.workspace }}/debian-rootfs")" ]; then
+            echo "Rootfs directory is populated."
+          else
+            echo "Rootfs directory is empty or does not exist. Exiting."
+            exit 1
+          fi
+
+      - name: Archive rootfs
+        run: |
+          # Compress the rootfs into a tarball
+          sudo tar -czf "${{ github.workspace }}/debian-rootfs.tar.gz" -C "${{ github.workspace }}/debian-rootfs" .
 
       - name: Upload rootfs artifact
         uses: actions/upload-artifact@v3
