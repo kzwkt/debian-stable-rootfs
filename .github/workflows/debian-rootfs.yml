@@ -18,16 +18,17 @@ jobs:
 
       - name: Create Debian Rootfs Tarball
         run: |
+          # Define the output tarball path
+          OUTPUT_TARBALL="${{ github.workspace }}/debian-rootfs.tar.gz"
           
           # Use debootstrap to create a minbase Debian rootfs tarball directly
-          sudo debootstrap --variant=minbase --arch=amd64 --make-tarball=root stable "${{ github.workspace }}/"  http://deb.debian.org/debian
-
-          ls "${{ github.workspace }}"
+          sudo debootstrap --variant=minbase --arch=amd64 stable "" http://deb.debian.org/debian --make-tarball="$OUTPUT_TARBALL"
+          
           # Adjust ownership to ensure the GitHub Actions runner user owns the tarball
-          sudo chown $USER:$USER "${{ github.workspace }}/root"
+          sudo chown $USER:$USER "$OUTPUT_TARBALL"
 
       - name: Upload rootfs artifact
         uses: actions/upload-artifact@v3
         with:
           name: debian-rootfs
-          path: root.tar
+          path: ${{ github.workspace }}/debian-rootfs.tar.gz
