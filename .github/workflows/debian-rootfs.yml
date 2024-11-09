@@ -22,7 +22,7 @@ jobs:
           OUTPUT_TARBALL="${{ github.workspace }}/debian-rootfs.tar.gz"
           
           # Use debootstrap to create a minbase Debian rootfs tarball directly
-          sudo debootstrap --variant=minbase --arch=amd64 --make-tarball="$OUTPUT_TARBALL" stable http://deb.debian.org/debian
+          sudo debootstrap --variant=minbase --arch=amd64 --make-tarball="$OUTPUT_TARBALL" stable "" http://deb.debian.org/debian
           
           # Adjust ownership to ensure the GitHub Actions runner user owns the tarball
           sudo chown $USER:$USER "$OUTPUT_TARBALL"
