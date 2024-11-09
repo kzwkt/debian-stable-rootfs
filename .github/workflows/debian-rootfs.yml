@@ -20,7 +20,7 @@ jobs:
         run: |
           
           # Use debootstrap to create a minbase Debian rootfs tarball directly
-          sudo debootstrap --variant=minbase --arch=amd64 --make-tarball=root stable  http://deb.debian.org/debian
+          sudo debootstrap --variant=minbase --arch=amd64 --make-tarball=root stable ""  http://deb.debian.org/debian
           
           # Adjust ownership to ensure the GitHub Actions runner user owns the tarball
           sudo chown $USER:$USER root.tar
