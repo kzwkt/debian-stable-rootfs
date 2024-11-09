@@ -42,7 +42,7 @@ jobs:
         run: |
           # Compress the rootfs into a tarball
           sudo tar -czf "${{ github.workspace }}/debian-rootfs.tar.gz" -C "${{ github.workspace }}/debian-rootfs" .
-          sudo chown $USER:$USER "$OUTPUT_TARBALL"
+          sudo chown $USER:$USER "${{ github.workspace }}/debian-rootfs.tar.gz"
 
       - name: Create GitHub Release
         id: create_release
