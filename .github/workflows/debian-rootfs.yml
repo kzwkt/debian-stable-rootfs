@@ -20,17 +20,27 @@ jobs:
         run: |
           # Define the rootfs output directory
           ROOTFS_DIR="${{ github.workspace }}/debian-rootfs"
+          
+          # Make sure the directory is created and empty
+          sudo rm -rf "$ROOTFS_DIR"
           sudo mkdir -p "$ROOTFS_DIR"
           
           # Run debootstrap with minbase variant
           sudo debootstrap --variant=minbase --arch=amd64 stable "$ROOTFS_DIR" http://deb.debian.org/debian
 
+      - name: Verify Rootfs Directory
+        run: |
+          # Check if the rootfs directory is populated
+          if [ -z "$(ls -A "$ROOTFS_DIR")" ]; then
+            echo "Rootfs directory is empty. Exiting."
+            exit 1
+          fi
+
       - name: Archive rootfs
         run: |
           # Compress the rootfs into a tarball
-          sudo tar -czf debian-rootfs.tar.gz -C "$ROOTFS_DIR" .
-          sudo chown $USER debian-rootfs.tar.gz
-
+          tar -czf debian-rootfs.tar.gz -C "$ROOTFS_DIR" .
+          
       - name: Upload rootfs artifact
         uses: actions/upload-artifact@v3
         with:
