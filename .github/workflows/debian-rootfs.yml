@@ -44,7 +44,7 @@ jobs:
           sudo tar -czf "${{ github.workspace }}/debian-rootfs.tar.gz" -C "${{ github.workspace }}/debian-rootfs" .
 
       - name: Upload rootfs artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: debian-rootfs
           path: ${{ github.workspace }}/debian-rootfs.tar.gz
