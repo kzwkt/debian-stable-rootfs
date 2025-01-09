@@ -1,0 +1,25 @@
+name: Create Tag
+
+on:
+  push:
+    branches:
+      - debian-stable  # Adjust the branch if needed
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    - name: Set up Git
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+    
+    - name: Create and push tag
+      run: |
+        TAG_NAME="v1.0.0"  # Adjust the tag name as needed
+        git tag $TAG_NAME
+        git push origin $TAG_NAME
