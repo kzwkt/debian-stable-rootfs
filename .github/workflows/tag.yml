@@ -1,25 +1,24 @@
 name: Create Tag
 
 on:
-  push:
-    branches:
-      - debian-stable  # Adjust the branch if needed
+  workflow_run:
+    workflows: ["Build Debian Rootfs"]  # Ensure this matches the name of the first workflow
+    types:
+      - completed
 
 jobs:
-  create-tag:
+  tag:
     runs-on: ubuntu-latest
-    
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    
-    - name: Set up Git
-      run: |
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
-    
-    - name: Create and push tag
-      run: |
-        TAG_NAME="v1.0.0"  # Adjust the tag name as needed
-        git tag $TAG_NAME
-        git push origin $TAG_NAME
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create Tag
+        run: |
+          TAG_NAME="v$(date +'%Y%m%d%H%M%S')"  # Example tag format based on date/time
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+
+      - name: Notify about the new tag
+        run: echo "New tag $TAG_NAME created and pushed."
