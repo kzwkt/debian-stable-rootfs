@@ -3,7 +3,7 @@ name: Build Debian Rootfs
 on:
   push:
     branches:
-      - main
+      - debian-stable
   workflow_dispatch:
 
 jobs:
