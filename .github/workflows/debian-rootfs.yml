@@ -59,9 +59,10 @@ jobs:
           name: debian-rootfs
           path: ${{ github.workspace }}/debian-rootfs.tar.gz
 
-      - name: Create a static tag
+      - name: Create a dynamic tag
         run: |
-          TAG_NAME="v1.0.0"  # Static tag, you can change this to any fixed version you want
+          # Generate a dynamic tag using commit SHA or other unique identifier
+          TAG_NAME="v$(date +'%Y%m%d%H%M%S')-${GITHUB_SHA:0:7}"  # Format: vYYYYMMDDHHMMSS-<commit SHA>
           git tag $TAG_NAME
           git push origin $TAG_NAME
 
