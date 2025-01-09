@@ -53,12 +53,6 @@ jobs:
           # Compress the rootfs into a tarball
           sudo tar -czf "${{ github.workspace }}/debian-rootfs.tar.gz" -C "${{ github.workspace }}/debian-rootfs" .
 
-      - name: Upload rootfs artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: debian-rootfs
-          path: ${{ github.workspace }}/debian-rootfs.tar.gz
-
       - name: Set dynamic tag version
         run: |
           # Generate a dynamic tag using commit SHA or other unique identifier
