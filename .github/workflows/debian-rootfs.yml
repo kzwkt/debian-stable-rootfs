@@ -26,8 +26,7 @@ jobs:
           sudo mkdir -p "$ROOTFS_DIR"
           
           # Run debootstrap with minbase variant
-          sudo debootstrap --variant=minbase --arch=amd64 stable "$ROOTFS_DIR" http://deb.debian.org/debian
-
+          sudo debootstrap --variant=minbase --arch=amd64 mantic "$ROOTFS_DIR" http://archive.ubuntu.com/ubuntu
       - name: Verify Rootfs Directory
         run: |
           # Check if the rootfs directory exists and is populated
