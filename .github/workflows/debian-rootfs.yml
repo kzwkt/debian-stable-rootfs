@@ -48,3 +48,11 @@ jobs:
         with:
           name: debian-rootfs
           path: ${{ github.workspace }}/debian-rootfs.tar.gz
+
+      - name: Create a GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+         files: ${{ github.workspace }}/debian-rootfs.tar.gz
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
