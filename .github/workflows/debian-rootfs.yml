@@ -16,6 +16,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y debootstrap
 
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history and tags
+
+      - name: Set up Git user
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
       - name: Create Debian Rootfs
         run: |
           # Define the rootfs output directory with full path
@@ -54,11 +64,10 @@ jobs:
           TAG_NAME="v1.0.0"  # Static tag, you can change this to any fixed version you want
           git tag $TAG_NAME
           git push origin $TAG_NAME
-          
+
       - name: Create a GitHub release
         uses: softprops/action-gh-release@v1
         with:
-         files: ${{ github.workspace }}/debian-rootfs.tar.gz
+          files: ${{ github.workspace }}/debian-rootfs.tar.gz
         env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
