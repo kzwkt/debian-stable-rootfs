@@ -59,16 +59,19 @@ jobs:
           name: debian-rootfs
           path: ${{ github.workspace }}/debian-rootfs.tar.gz
 
-      - name: Create a dynamic tag
+      - name: Set dynamic tag version
         run: |
           # Generate a dynamic tag using commit SHA or other unique identifier
-          TAG_NAME="v$(date +'%Y%m%d%H%M%S')-${GITHUB_SHA:0:7}"  # Format: vYYYYMMDDHHMMSS-<commit SHA>
-          git tag $TAG_NAME
-          git push origin $TAG_NAME
+          VERSION="v$(date +'%Y%m%d%H%M%S')-${GITHUB_SHA:0:7}"  # Format: vYYYYMMDDHHMMSS-<commit SHA>
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
-      - name: Create a GitHub release
-        uses: softprops/action-gh-release@v1
+      - name: Create a new GitHub release and tag
+        uses: softprops/action-gh-release@v2
         with:
-          files: ${{ github.workspace }}/debian-rootfs.tar.gz
+          tag_name: ${{ env.VERSION }}
+          name: "Release ${{ env.VERSION }}"
+          body: "This release includes the latest build for Debian rootfs."
+          files: |
+            ${{ github.workspace }}/debian-rootfs.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
