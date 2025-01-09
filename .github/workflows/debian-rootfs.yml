@@ -49,6 +49,12 @@ jobs:
           name: debian-rootfs
           path: ${{ github.workspace }}/debian-rootfs.tar.gz
 
+      - name: Create a static tag
+        run: |
+          TAG_NAME="v1.0.0"  # Static tag, you can change this to any fixed version you want
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+          
       - name: Create a GitHub release
         uses: softprops/action-gh-release@v1
         with:
