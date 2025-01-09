@@ -1,4 +1,4 @@
-name: Build Debian Rootfs
+name: Build Ubuntu Rootfs
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y debootstrap
 
-      - name: Create Debian Rootfs
+      - name: Create Ubuntu Rootfs
         run: |
           # Define the rootfs output directory with full path
           export ROOTFS_DIR="${{ github.workspace }}/ubuntu-rootfs"
@@ -33,8 +33,19 @@ jobs:
           # Compress the rootfs into a tarball
           sudo tar -czf "${{ github.workspace }}/ubuntu-rootfs.tar.gz" -C "${{ github.workspace }}/ubuntu-rootfs" .
 
-      - name: Upload rootfs artifact
-        uses: actions/upload-artifact@v4
+      - name: Set dynamic tag version
+        run: |
+          # Generate a dynamic tag using commit SHA or other unique identifier
+          VERSION="v$(date +'%Y%m%d%H%M%S')-${GITHUB_SHA:0:7}"  # Format: vYYYYMMDDHHMMSS-<commit SHA>
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
+      - name: Create a new GitHub release and tag
+        uses: softprops/action-gh-release@v2
         with:
-          name: debian-rootfs
-          path: ${{ github.workspace }}/ubuntu-rootfs.tar.gz
+          tag_name: ${{ env.VERSION }}
+          name: "Release ${{ env.VERSION }}"
+          body: "This release includes the latest build for Ubuntu  oracular rootfs."
+          files: |
+            ${{ github.workspace }}/ubuntu-rootfs.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
