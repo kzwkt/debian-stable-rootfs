@@ -64,7 +64,7 @@ jobs:
         with:
           tag_name: ${{ env.VERSION }}
           name: "Release ${{ env.VERSION }}"
-          body: "This release includes the latest build for Debian rootfs."
+          body: "This release includes the latest build for Debian rootfs :-"
           files: |
             ${{ github.workspace }}/debian-rootfs.tar.gz
         env:
