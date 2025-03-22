@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Create Ubuntu Rootfs
         run: |
-          sudo bash build.sh
+          bash build.sh
           upload=$(realpath rootfs.tar.gz)
           echo "VERSION=$(cat version)" >> $GITHUB_ENV
           echo "FILE1=$upload" >> $GITHUB_ENV
