@@ -9,6 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
       - name: Create Ubuntu Rootfs
         run: |
           bash build.sh
@@ -16,7 +20,7 @@ jobs:
           echo "VERSION=$(cat version)" >> $GITHUB_ENV
           echo "FILE1=$upload" >> $GITHUB_ENV
 
-      - name: Create a new GitHub release and tag
+      - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.VERSION }}
