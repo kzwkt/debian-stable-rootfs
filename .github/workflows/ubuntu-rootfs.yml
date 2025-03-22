@@ -1,51 +1,27 @@
 name: Build Ubuntu Rootfs
 
-on:
-  push:
-    branches:
-      - ubuntu-24.10
-  workflow_dispatch:
+on: workflow_dispatch
 
 jobs:
   build-rootfs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set up the environment
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y debootstrap
-
       - name: Create Ubuntu Rootfs
         run: |
-          # Define the rootfs output directory with full path
-          export ROOTFS_DIR="${{ github.workspace }}/ubuntu-rootfs"
-          
-          # Make sure the directory is created and empty
-          sudo rm -rf "$ROOTFS_DIR"
-          sudo mkdir -p "$ROOTFS_DIR"
-          
-          # Run debootstrap with minbase variant
-          sudo debootstrap --variant=minbase --arch=amd64 oracular "$ROOTFS_DIR" http://archive.ubuntu.com/ubuntu
-
-      - name: Archive rootfs
-        run: |
-          # Compress the rootfs into a tarball
-          sudo tar -czf "${{ github.workspace }}/ubuntu-rootfs.tar.gz" -C "${{ github.workspace }}/ubuntu-rootfs" .
-
-      - name: Set dynamic tag version
-        run: |
-          # Generate a dynamic tag using commit SHA or other unique identifier
-          VERSION="v$(date +'%Y%m%d%H%M%S')-${GITHUB_SHA:0:7}"  # Format: vYYYYMMDDHHMMSS-<commit SHA>
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          sudo bash build.sh
+          upload=$(realpath rootfs.tar.gz)
+          echo "VERSION=$(cat version)" >> $GITHUB_ENV
+          echo "FILE1=$upload" >> $GITHUB_ENV
 
       - name: Create a new GitHub release and tag
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.VERSION }}
           name: "Release ${{ env.VERSION }}"
-          body: "This release includes the latest build for Ubuntu  oracular rootfs."
+          body: "This release includes the latest build for Ubuntu  ${{ env.VERSION }} rootfs."
           files: |
-            ${{ github.workspace }}/ubuntu-rootfs.tar.gz
+                ${{ env.FILE1 }}
+            
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
