@@ -15,55 +15,15 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y debootstrap
-
-      - name: Checkout the repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Fetch all history and tags
-
-      - name: Set up Git user
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-
-      - name: Create Debian Rootfs
-        run: |
-          # Define the rootfs output directory with full path
           export ROOTFS_DIR="${{ github.workspace }}/debian-rootfs"
-          
-          # Make sure the directory is created and empty
-          sudo rm -rf "$ROOTFS_DIR"
-          sudo mkdir -p "$ROOTFS_DIR"
-          
-          # Run debootstrap with minbase variant
           sudo debootstrap --variant=minbase --arch=amd64 stable "$ROOTFS_DIR" http://deb.debian.org/debian
-
-      - name: Verify Rootfs Directory
-        run: |
-          # Check if the rootfs directory exists and is populated
-          if [ -d "${{ github.workspace }}/debian-rootfs" ] && [ "$(ls -A "${{ github.workspace }}/debian-rootfs")" ]; then
-            echo "Rootfs directory is populated."
-          else
-            echo "Rootfs directory is empty or does not exist. Exiting."
-            exit 1
-          fi
-
-      - name: Archive rootfs
-        run: |
-          # Compress the rootfs into a tarball
           sudo tar -czf "${{ github.workspace }}/debian-rootfs.tar.gz" -C "${{ github.workspace }}/debian-rootfs" .
-
-      - name: Set dynamic tag version
-        run: |
-          # Generate a dynamic tag using commit SHA or other unique identifier
-          VERSION="v$(date +'%Y%m%d%H%M%S')-${GITHUB_SHA:0:7}"  # Format: vYYYYMMDDHHMMSS-<commit SHA>
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Create a new GitHub release and tag
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ env.VERSION }}
-          name: "Release ${{ env.VERSION }}"
+          tag_name: debian
+          name: "Release debian"
           body: "This release includes the latest build for Debian rootfs :-"
           files: |
             ${{ github.workspace }}/debian-rootfs.tar.gz
