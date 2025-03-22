@@ -2,6 +2,8 @@ name: Build Ubuntu Rootfs
 
 on: 
   workflow_dispatch:
+      branches:
+      - ubuntu-24.10
  
 jobs:
   build-rootfs:
