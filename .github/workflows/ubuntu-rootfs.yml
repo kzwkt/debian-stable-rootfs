@@ -1,7 +1,8 @@
 name: Build Ubuntu Rootfs
 
-on: workflow_dispatch
-
+on: 
+  workflow_dispatch:
+ 
 jobs:
   build-rootfs:
     runs-on: ubuntu-latest
