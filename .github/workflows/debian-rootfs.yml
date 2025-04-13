@@ -14,7 +14,7 @@ jobs:
           sudo apt-get install -y debootstrap
           export ROOTFS_DIR="${{ github.workspace }}/debian-rootfs"
           sudo debootstrap --variant=minbase --arch=amd64 stable "$ROOTFS_DIR" http://deb.debian.org/debian
-          rm -rf $ROOTFS_DIR/var/cache/apt/
+          sudo rm -rf $ROOTFS_DIR/var/cache/apt/
           sudo tar -czf "${{ github.workspace }}/debian-rootfs.tar.gz" -C "${{ github.workspace }}/debian-rootfs" .
 
       - name: Create a new GitHub release and tag
