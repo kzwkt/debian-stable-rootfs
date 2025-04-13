@@ -1,9 +1,6 @@
 name: Build Debian Rootfs
 #rr
 on:
-  push:
-    branches:
-      - debian-stable
   workflow_dispatch:
 
 jobs:
