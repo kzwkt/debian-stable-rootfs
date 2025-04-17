@@ -1,4 +1,4 @@
-name: Build Ubuntu Rootfs
+name: Build  Rootfs
 
 on: 
   workflow_dispatch:
