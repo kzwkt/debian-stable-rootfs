@@ -1,4 +1,4 @@
-name: Build Debian Rootfs
+name: Build  Rootfs
 on:
   workflow_dispatch:
 
