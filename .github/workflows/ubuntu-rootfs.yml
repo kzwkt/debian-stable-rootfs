@@ -18,11 +18,12 @@ jobs:
           bash build.sh
           upload=$(realpath rootfs.tar.gz)
           echo "FILE1=$upload" >> $GITHUB_ENV
+          echo "codename=$(cat codename)" >> $GITHUB_ENV
 
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ubuntu
+          tag_name: ubuntu-${{ env.codename }}
           name: "Release ubuntu"
           body: "This release includes the latest build for Ubuntu  ${{ env.VERSION }} rootfs."
           files: |
