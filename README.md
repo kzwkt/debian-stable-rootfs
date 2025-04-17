@@ -1,3 +1,3 @@
-# debian-stable-rootfs
+# ubuntu-$suite-rootfs
 
-update Thu Nov 28 10:30:23 AM +0545 2024
+edit  suite variable for diffrent release
