@@ -1,0 +1,28 @@
+name: Build Debian Rootfs
+on:
+  workflow_dispatch:
+
+jobs:
+  build-rootfs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up the environment
+        run: |
+          bash build.sh
+          upload=$(realpath rootfs.tar.gz)
+          echo "FILE1=$upload" >> $GITHUB_ENV
+          echo "codename=$(cat codename)" >> $GITHUB_ENV
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: debian-${{ env.codename }}
+          name: "Release debian"
+          body: "This release includes the rootfs build for debian ${{ env.codename }} "
+          files: |
+                ${{ env.FILE1 }}
+            
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
